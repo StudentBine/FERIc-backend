@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import { config } from './config';
 import { initFirebase, getGroups } from './firebase';
-import { startCron } from './services/cron';
 
 import healthRouter from './routes/health';
 import programsRouter from './routes/programs';
@@ -38,7 +37,7 @@ app.use('/api/sync', syncRouter);
 
 app.listen(config.port, () => {
   console.log(`[server] listening on port ${config.port} (${config.nodeEnv})`);
-  startCron();
+  // Sync runs via GitHub Actions (.github/workflows/sync.yml) — not in-process.
 });
 
 export default app;

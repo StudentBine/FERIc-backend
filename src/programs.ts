@@ -11,7 +11,8 @@ export const PROGRAMS: ProgramConfig[] = [
     name: 'Informatika in tehnologije komuniciranja (ITK)',
     value: 'itk',
     text: 'Informatika in tehnologije komuniciranja (ITK)',
-    pageUrl: 'https://www.wise-tt.com/wtt_um_feri/index.jsp?filterId=0;51;0;0;'
+    pageUrl: 'https://www.wise-tt.com/wtt_um_feri/index.jsp?filterId=0;51;0;0;',
+    codes: ['BV30'], // VS code — add 'BU80' here once you have the IPT UN URL
   },
 ];
 

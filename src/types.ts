@@ -27,6 +27,8 @@ export interface ProgramConfig {
   // The page URL you copy from the browser — the iCal URL is derived from it automatically.
   // Example: https://www.wise-tt.com/wtt_um_feri/index.jsp?filterId=0;51;0;0;
   pageUrl: string;
+  // Program codes from the seed data (e.g. 'BV30') that route to this scraper
+  codes: string[];
 }
 
 export interface GroupInfo {

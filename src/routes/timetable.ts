@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { getEvents, getMeta, getChanges } from '../firebase';
+import { PROGRAMS } from '../programs';
 import type { ScheduleEvent, WeekData } from '../types';
 
 const router = Router();
@@ -9,6 +10,23 @@ interface TimetableRequest {
   year?: string;
   groups: string[];
   week?: string; // ISO week number as string, e.g. "15"
+}
+
+// Resolve whatever the frontend sends (full name, code, or id) to a backend program id
+function resolveProgram(raw: string): string {
+  // Already a known backend ID
+  if (PROGRAMS.find(p => p.id === raw)) return raw;
+  // Extract "(CODE)" suffix — frontend sends "PROGRAM NAME (BV30)"
+  const m = raw.match(/\(([A-Z0-9]+)\)\s*$/i);
+  if (m) {
+    const code = m[1].toUpperCase();
+    const p = PROGRAMS.find(prog => prog.codes.some(c => c.toUpperCase() === code));
+    if (p) return p.id;
+  }
+  // Partial name match as last resort
+  const lower = raw.toLowerCase().split('(')[0].trim();
+  const byName = PROGRAMS.find(p => p.name.toLowerCase().includes(lower) || lower.includes(p.id));
+  return byName?.id ?? raw;
 }
 
 // Filter events by selected groups (empty array = return all)
@@ -48,7 +66,9 @@ router.post('/', async (req, res) => {
     return;
   }
 
-  const eventsMap = await getEvents(program);
+  const programId = resolveProgram(program);
+  console.log(`[timetable] resolved "${program}" → "${programId}"`);
+  const eventsMap = await getEvents(programId);
   let events = Object.values(eventsMap);
 
   events = filterByGroups(events, groups ?? []);
